@@ -5,7 +5,8 @@ import './index.css';
 import GAuth from 'vue3-google-oauth2';
 
 const gAuthOptions = {
-  clientId: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
+  clientId:
+    '1001497098111-tbs3uidhom0r2p6gjaa8kqed4qp3oc61.apps.googleusercontent.com',
   scope: 'email',
   prompt: 'consent',
   fetch_basic_profile: false
