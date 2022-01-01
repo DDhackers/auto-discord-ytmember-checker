@@ -1,25 +1,18 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite + Tailwind" />
+  <div
+    class="w-full fixed shadow-lg h-14 flex justify-center items-center bg-neutral-800"
+  >
+    <span class="font-bold">Discord YT member link</span>
+  </div>
+  <div class="h-14"></div>
+  <div class="container mx-auto p-4">
+    <VerifyWindow />
+  </div>
 </template>
 
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import { getCurrentInstance, inject } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
 
-const gAuth = inject('Vue3GoogleOauth');
-console.log(gAuth);
+import VerifyWindow from './components/VerifyWindow.vue';
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
