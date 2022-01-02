@@ -6,6 +6,10 @@
           class="btn bg-red-600"
           :class="{
             'active:bg-red-500': !isAuthed,
+            'bg-transparent': isAuthed,
+            outline: isAuthed,
+            'text-red-500': isAuthed,
+            'outline-red-500': isAuthed,
             'cursor-default': isAuthed
           }"
           @click="openUrl"
@@ -32,7 +36,7 @@
   </div>
 
   <div class="flex">
-    <!-- <Async
+    <Async
       :loading="isFetching"
       :class="isFetching ? ['flex', 'justify-center'] : ['w-full']"
     >
@@ -40,41 +44,39 @@
         v-if="isAuthed"
         class="info_card card my-3 bg-zinc-700 mx-auto sm:mx-0"
       >
-        <img :src="basicProfile.getImageUrl" />
+        <img :src="userInfo.UserAvatarUrl" />
 
         <div class="p-5">
-          <p class="text-gray-300">{{ basicProfile.getEmail }}</p>
-          <p class="text-white font-bold">{{ basicProfile.getName }}</p>
+          <p class="text-white font-bold">{{ userInfo.UserName }}</p>
         </div>
       </div>
-    </Async> -->
+    </Async>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, ref, watch } from 'vue';
-import ProgresserCircular from './ProgresserCircular.vue';
+import { inject, onMounted, ref } from 'vue';
 import Async from './Async.vue';
-import { randomNAString } from '@/lib/random';
 
 const tempToken = inject('tempToken');
 const googleClientId = inject('googleClientId');
 
 const emit = defineEmits(['auth']);
 
-interface BasicProfile {
-  getEmail: () => string;
-  getFamilyName: () => string;
-  getGivenName: () => string;
-  getId: () => string;
-  getImageUrl: () => string;
-  getName: () => string;
+interface UserInfo {
+  UserName: string;
+  UserAvatarUrl: string;
 }
 
 const isFetching = ref<boolean>(false);
-const basicProfile = ref({} as BasicProfile);
+const userInfo = ref({} as UserInfo);
 
 const isAuthed = ref<boolean>(false);
+
+interface CallBackResponse {
+  code: number;
+  message: UserInfo;
+}
 
 onMounted(async () => {
   const currentUrl = new URL(location.href);
@@ -91,7 +93,8 @@ onMounted(async () => {
     emit('auth', googleCode);
 
     if (!result.ok) throw result;
-    const response = await result.json(); // might return user basic info
+    const response = (await result.json()) as CallBackResponse;
+    userInfo.value = response.message;
 
     isAuthed.value = true;
   } catch (error) {

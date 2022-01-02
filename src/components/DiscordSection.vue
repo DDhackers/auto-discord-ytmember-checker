@@ -6,6 +6,10 @@
           class="btn bg-indigo-600"
           :class="{
             'active:bg-indigo-500': !isAuthed,
+            'bg-transparent': isAuthed,
+            outline: isAuthed,
+            'text-indigo-500': isAuthed,
+            'outline-indigo-500': isAuthed,
             'cursor-default': isAuthed
           }"
           @click="openDiscord"

@@ -27,9 +27,16 @@
       <button
         v-if="!!googleAccessToken && !!discordAccessToken && !isSuccess"
         class="btn bg-blue-700"
+        :class="{
+          'bg-transparent': isSuccess,
+          outline: isSuccess,
+          'text-blue-500': isSuccess,
+          'outline-blue-500': isSuccess,
+          'cursor-default': isSuccess
+        }"
         @click="sendTokens"
       >
-        <span>送出驗證</span>
+        <span>{{ isSuccess ? '已完成驗證' : '送出驗證' }}</span>
       </button>
     </Async>
   </div>
@@ -91,6 +98,7 @@ watchEffect(() => {
 });
 
 const sendTokens = async () => {
+  if (isSuccess.value) return;
   isTokenSending.value = true;
   const payload = {
     DiscordAccessToken: discordAccessToken.value,
@@ -105,6 +113,7 @@ const sendTokens = async () => {
     console.log({ result });
 
     if (!result.ok) throw result;
+    toastText.value = '所有驗證都已完成 可以關閉此頁面了';
     isSuccess.value = true;
   } catch (error: any) {
     if (error.status) handleResponseError(error.status);
