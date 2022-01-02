@@ -8,11 +8,9 @@
             'active:bg-red-500': !isAuthed,
             'cursor-default': isAuthed
           }"
-          @click="openGoogle"
+          @click="openUrl"
         >
-          <Async :loading="!gAuth.isInit" :size="24">
-            <span>{{ isAuthed ? '已驗證' : '開始驗證' }} google</span>
-          </Async>
+          <span>{{ isAuthed ? '已驗證' : '開始驗證' }} google</span>
         </button>
 
         <svg
@@ -34,45 +32,35 @@
   </div>
 
   <div class="flex">
-    <Async
+    <!-- <Async
       :loading="isFetching"
       :class="isFetching ? ['flex', 'justify-center'] : ['w-full']"
     >
       <div
-        v-if="gAuth.isInit && isAuthed"
+        v-if="isAuthed"
         class="info_card card my-3 bg-zinc-700 mx-auto sm:mx-0"
       >
-        <img :src="basicProfile.getImageUrl()" />
+        <img :src="basicProfile.getImageUrl" />
 
         <div class="p-5">
-          <p class="text-gray-300">{{ basicProfile.getEmail() }}</p>
-          <p class="text-white font-bold">{{ basicProfile.getName() }}</p>
+          <p class="text-gray-300">{{ basicProfile.getEmail }}</p>
+          <p class="text-white font-bold">{{ basicProfile.getName }}</p>
         </div>
       </div>
-    </Async>
+    </Async> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, watch } from 'vue';
+import { computed, inject, onMounted, ref, watch } from 'vue';
 import ProgresserCircular from './ProgresserCircular.vue';
 import Async from './Async.vue';
+import { randomNAString } from '@/lib/random';
 
-const gAuth: any = inject('Vue3GoogleOauth');
+const tempToken = inject('tempToken');
+const googleClientId = inject('googleClientId');
+
 const emit = defineEmits(['auth']);
-
-interface AuthResponse {
-  token_type: string;
-  access_token: string;
-  scope: string;
-  login_hint: string;
-  expires_in: number;
-  id_token: string;
-  session_state: any;
-  first_issued_at: number;
-  expires_at: number;
-  idpId: string;
-}
 
 interface BasicProfile {
   getEmail: () => string;
@@ -88,22 +76,42 @@ const basicProfile = ref({} as BasicProfile);
 
 const isAuthed = ref<boolean>(false);
 
-const openGoogle = async () => {
-  if (!gAuth.isInit || isAuthed.value) return;
-  try {
-    isFetching.value = true;
-    const googleUser = await gAuth.instance.signIn();
+onMounted(async () => {
+  const currentUrl = new URL(location.href);
+  const googleCode = currentUrl.searchParams.get('code');
 
-    const { access_token } = googleUser.getAuthResponse() as AuthResponse;
-    basicProfile.value = googleUser.getBasicProfile() as BasicProfile;
+  if (!googleCode) return;
+
+  isFetching.value = true;
+
+  try {
+    const result = await fetch(
+      `${location.origin}/GoogleCallBack?code=${googleCode}&state=${tempToken}`
+    );
+    emit('auth', googleCode);
+
+    if (!result.ok) throw result;
+    const response = await result.json(); // might return user basic info
 
     isAuthed.value = true;
-
-    emit('auth', access_token);
   } catch (error) {
     console.error(error);
   } finally {
     isFetching.value = false;
   }
+});
+
+const openUrl = () => {
+  if (isAuthed.value) return;
+  const url: string = `https://accounts.google.com/o/oauth2/v2/auth?
+    scope=https%3A//www.googleapis.com/auth/youtube.force-ssl&
+    access_type=offline&
+    include_granted_scopes=true&
+    response_type=code&
+    state=${tempToken}&
+    redirect_uri=${location.origin}&
+    client_id=${googleClientId}`.replace(/\n| /g, '');
+
+  location.href = url;
 };
 </script>

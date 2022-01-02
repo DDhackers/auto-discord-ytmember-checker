@@ -68,9 +68,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 import ProgresserCircular from './ProgresserCircular.vue';
 import Async from './Async.vue';
+
+const discordClientId = inject('discordClientId');
 
 interface DiscordUser {
   accent_color: string;
@@ -96,20 +98,24 @@ const isAuthed = computed<boolean>(() => !!userInfo.value.id);
 onMounted(async () => {
   const fragment = new URLSearchParams(window.location.hash.slice(1));
 
-  const [accessToken, tokenType] = [
-    fragment.get('access_token'),
-    fragment.get('token_type')
+  const [accessToken] = [
+    fragment.get('access_token') ||
+      sessionStorage.getItem('discord_access_token')
   ];
 
   if (accessToken) {
     emit('auth', accessToken);
+    sessionStorage.setItem('discord_access_token', accessToken);
   }
 
   try {
     isFetching.value = true;
+    const at: string | null = sessionStorage.getItem('discord_access_token');
+
+    if (!at) return;
     const result = await fetch('https://discord.com/api/users/@me', {
       headers: {
-        authorization: `${tokenType} ${accessToken}`
+        authorization: `Bearer ${at}`
       }
     });
     const response = (await result.json()) as DiscordUser;
@@ -123,8 +129,7 @@ onMounted(async () => {
 
 const openDiscord = () => {
   if (isAuthed.value) return;
-  location.href =
-    'https://discord.com/api/oauth2/authorize?client_id=748109225728933908&redirect_uri=http%3A%2F%2Flocalhost%3A3333&response_type=token&scope=identify';
+  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=http%3A%2F%2Flocalhost%3A3333&response_type=token&scope=identify`;
 };
 </script>
 

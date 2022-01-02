@@ -30,3 +30,30 @@ html {
   width: 320px;
   max-width: 100%;
 }
+
+.toast {
+  @apply rounded;
+  @apply shadow;
+  @apply flex;
+  @apply fixed;
+  @apply top-6;
+  @apply left-1/2;
+  @apply -translate-x-1/2;
+  @apply px-5;
+  @apply py-3;
+}
+
+.toast-enter-active,
+.toast-leave-active {
+  transition: 0.3s;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+  top: 0;
+}
+
+.toast-leave-from,
+.toast-enter-to {
+  @apply top-6;
+}

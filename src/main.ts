@@ -2,15 +2,19 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import './index.scss';
 
-import GAuth from 'vue3-google-oauth2';
+import { randomNAString } from './lib/random';
 
-const gAuthOptions = {
-  clientId:
-    '829953456098-fimbade1e4l8fut03gkkm28vf73lhesb.apps.googleusercontent.com',
-  prompt: 'consent'
-};
+const tempToken: string =
+  sessionStorage.getItem('tempToken') || randomNAString(64);
+sessionStorage.setItem('tempToken', tempToken);
 
 const app = createApp(App);
 
-app.use(GAuth, gAuthOptions);
+app.provide('tempToken', tempToken);
+app.provide(
+  'googleClientId',
+  '829953456098-fimbade1e4l8fut03gkkm28vf73lhesb.apps.googleusercontent.com'
+);
+app.provide('discordClientId', '748109225728933908');
+
 app.mount('#app');
