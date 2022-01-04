@@ -13,9 +13,9 @@ const app = createApp(App);
 app.provide('tempToken', tempToken);
 app.provide(
   'googleClientId',
-  '829953456098-fimbade1e4l8fut03gkkm28vf73lhesb.apps.googleusercontent.com'
+  '1001497098111-tbs3uidhom0r2p6gjaa8kqed4qp3oc61.apps.googleusercontent.com'
 );
-app.provide('discordClientId', '748109225728933908');
+app.provide('discordClientId', '758222559392432160');
 app.provide('apiURL', 'https://api.junrasp.com');
 
 app.mount('#app');
