@@ -89,6 +89,7 @@ onMounted(async () => {
     const result = await fetch(
       `${apiURL}/GoogleCallBack?code=${googleCode}&state=${tempToken}`,
       {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
