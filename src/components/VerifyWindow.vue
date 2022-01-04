@@ -126,6 +126,9 @@ const sendTokens = async () => {
     if (!result.ok) throw result;
     toastText.value = '所有驗證都已完成 可以關閉此頁面了';
     isSuccess.value = true;
+    history.replaceState(null, '', '/');
+    sessionStorage.clear();
+    localStorage.clear();
   } catch (error: any) {
     if (error.status) handleResponseError(error.status);
   } finally {
