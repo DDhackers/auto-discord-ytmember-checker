@@ -108,13 +108,15 @@ onMounted(async () => {
 const openUrl = () => {
   if (isAuthed.value) return;
   const url: string = `https://accounts.google.com/o/oauth2/v2/auth?
-    scope=https%3A//www.googleapis.com/auth/youtube.force-ssl&
+    scope=https://www.googleapis.com/auth/userinfo.profile{{BLANK}}https%3A//www.googleapis.com/auth/youtube.force-ssl&
     access_type=offline&
     include_granted_scopes=true&
     response_type=code&
     state=${tempToken}&
     redirect_uri=${location.origin}&
-    client_id=${googleClientId}`.replace(/\n| /g, '');
+    client_id=${googleClientId}`
+    .replace(/\n| /g, '')
+    .replace(/{{BLANK}}/g, ' ');
 
   location.href = url;
 };
