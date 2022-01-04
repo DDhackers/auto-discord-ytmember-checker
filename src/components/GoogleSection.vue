@@ -87,7 +87,12 @@ onMounted(async () => {
 
   try {
     const result = await fetch(
-      `${apiURL}/GoogleCallBack?code=${googleCode}&state=${tempToken}`
+      `${apiURL}/GoogleCallBack?code=${googleCode}&state=${tempToken}`,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
     );
     emit('auth', googleCode);
 

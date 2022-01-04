@@ -114,9 +114,12 @@ const sendTokens = async () => {
   };
 
   try {
-    const result = await fetch(`${apiURL}/v1/login`, {
+    const result = await fetch(`${apiURL}/login`, {
       method: 'POST',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
     console.log({ result });
 
