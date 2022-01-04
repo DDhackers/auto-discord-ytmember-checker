@@ -1,10 +1,11 @@
 <template>
   <div class="w-full">
-    <div class="flex justify-center sm:justify-start items-center">
+    <div class="flex justify-center items-center">
       <div class="relative">
         <button
-          class="btn bg-indigo-600"
+          class="btn"
           :class="{
+            'bg-indigo-600': !isAuthed,
             'active:bg-indigo-500': !isAuthed,
             'bg-transparent': isAuthed,
             outline: isAuthed,
@@ -35,10 +36,7 @@
     </div>
 
     <div class="flex mb-5">
-      <Async
-        :loading="isFetching"
-        :class="isFetching ? ['flex', 'justify-center'] : ['w-full']"
-      >
+      <Async :loading="isFetching" class="flex justify-center w-full">
         <div
           v-if="isAuthed"
           class="info_card card bg-zinc-900 my-3 mx-auto sm:mx-0"
@@ -55,7 +53,8 @@
                 class="w-24 h-24 bg-zinc-900 p-1 absolute -top-12 rounded-full flex justify-center items-center"
               >
                 <img
-                  :src="`https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}.png?size=64`"
+                  :src="`https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}.png?size=96`"
+                  class="rounded-full"
                 />
               </div>
               <div class="h-12"></div>

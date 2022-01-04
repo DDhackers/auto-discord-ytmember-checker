@@ -1,10 +1,11 @@
 <template>
   <div>
-    <div class="flex justify-center sm:justify-start items-center">
+    <div class="flex justify-center items-center">
       <div class="relative">
         <button
-          class="btn bg-red-600"
+          class="btn"
           :class="{
+            'bg-red-600': !isAuthed,
             'active:bg-red-500': !isAuthed,
             'bg-transparent': isAuthed,
             outline: isAuthed,
@@ -36,10 +37,7 @@
   </div>
 
   <div class="flex">
-    <Async
-      :loading="isFetching"
-      :class="isFetching ? ['flex', 'justify-center'] : ['w-full']"
-    >
+    <Async :loading="isFetching" class="flex justify-center w-full">
       <div
         v-if="isAuthed"
         class="info_card card my-3 bg-zinc-700 mx-auto sm:mx-0"

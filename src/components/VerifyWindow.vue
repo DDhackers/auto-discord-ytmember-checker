@@ -1,28 +1,35 @@
 <template>
-  <p class="text-5xl mb-3 flex items-center text-center sm:text-left">
-    <img src="/DYML.png" class="w-20 h-20 mr-2" />
-    Member Link
-  </p>
-  <div class="h-3"></div>
-  <p>這是一個可自動驗證會員的應用程式</p>
-  <p>
-    將會需要您的
-    <strong class="text-indigo-400">discord</strong>
-    以及
-    <strong class="text-red-400">youtube</strong>
-    授權
-    <br />
-    才有辦法為您做自動驗證
-  </p>
-  <p class="mt-2">點擊下方按鈕完成</p>
+  <div class="text-center">
+    <p class="text-5xl mb-3 flex justify-center items-center">
+      <img src="/DYML.png" class="w-20 h-20 mr-2" />
+      Member Link
+    </p>
+    <div class="h-3"></div>
+    <p>這是一個可自動驗證會員的應用程式</p>
+    <p>
+      將會需要您的
+      <strong class="text-indigo-400">discord</strong>
+      以及
+      <strong class="text-red-400">youtube</strong>
+      授權
+      <br />
+      才有辦法為您做自動驗證
+    </p>
+    <p class="mt-2">點擊下方按鈕完成</p>
+  </div>
   <div class="h-4"></div>
-  <DiscordSection @auth="(v) => (discordAccessToken = v)" />
-  <div class="h-4"></div>
-  <GoogleSection @auth="(v) => (googleAccessToken = v)" />
+  <div class="flex flex-wrap">
+    <div class="w-full sm:w-1/2">
+      <DiscordSection @auth="(v) => (discordAccessToken = v)" />
+    </div>
+    <div class="w-full sm:w-1/2">
+      <GoogleSection @auth="(v) => (googleAccessToken = v)" />
+    </div>
+  </div>
 
   <div class="h-4"></div>
 
-  <div class="w-full flex justify-center sm:justify-start">
+  <div class="w-full flex justify-center">
     <Async :loading="isTokenSending">
       <button
         v-if="!!googleAccessToken && !!discordAccessToken && !isSuccess"
