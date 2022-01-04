@@ -133,7 +133,7 @@ onMounted(async () => {
 
 const openDiscord = () => {
   if (isAuthed.value) return;
-  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=http%3A%2F%2Flocalhost%3A3333&response_type=token&scope=identify`;
+  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${location.origin}&response_type=token&scope=identify`;
 };
 </script>
 
