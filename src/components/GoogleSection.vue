@@ -60,6 +60,7 @@ import Async from './Async.vue';
 
 const tempToken = inject('tempToken');
 const googleClientId = inject('googleClientId');
+const apiURL = inject('apiURL');
 
 const emit = defineEmits(['auth']);
 
@@ -88,7 +89,7 @@ onMounted(async () => {
 
   try {
     const result = await fetch(
-      `${location.origin}/GoogleCallBack?code=${googleCode}&state=${tempToken}`
+      `${apiURL}/GoogleCallBack?code=${googleCode}&state=${tempToken}`
     );
     emit('auth', googleCode);
 

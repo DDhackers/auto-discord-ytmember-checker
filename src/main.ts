@@ -16,5 +16,6 @@ app.provide(
   '829953456098-fimbade1e4l8fut03gkkm28vf73lhesb.apps.googleusercontent.com'
 );
 app.provide('discordClientId', '748109225728933908');
+app.provide('apiURL', 'https://api.junrasp.com');
 
 app.mount('#app');

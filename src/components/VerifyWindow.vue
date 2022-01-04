@@ -63,6 +63,7 @@ import { randomNAString } from '../lib/random';
 import Async from './Async.vue';
 
 const tempToken = inject('tempToken');
+const apiURL = inject('apiURL');
 
 const googleAccessToken = ref<string>('');
 const discordAccessToken = ref<string>('');
@@ -106,7 +107,7 @@ const sendTokens = async () => {
   };
 
   try {
-    const result = await fetch(`${location.origin}/v1/login`, {
+    const result = await fetch(`${apiURL}/v1/login`, {
       method: 'POST',
       body: JSON.stringify(payload)
     });
