@@ -79,9 +79,12 @@ interface CallBackResponse {
 
 onMounted(async () => {
   const currentUrl = new URL(location.href);
-  const googleCode = currentUrl.searchParams.get('code');
+  const googleCode =
+    currentUrl.searchParams.get('code') ||
+    sessionStorage.getItem('google_code');
 
   if (!googleCode) return;
+  sessionStorage.setItem('google_code', googleCode);
 
   isFetching.value = true;
 
