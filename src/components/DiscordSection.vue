@@ -36,7 +36,10 @@
     </div>
 
     <div class="flex mb-5">
-      <Async :loading="isFetching" class="flex justify-center w-full">
+      <Async
+        :loading="isFetching || isFetchingConnection"
+        class="flex justify-center w-full"
+      >
         <div
           v-if="isAuthed"
           class="info_card card bg-zinc-900 my-3 mx-auto sm:mx-0"
@@ -141,7 +144,6 @@ onMounted(async () => {
     sessionStorage.setItem('discord_access_token', accessToken);
   }
 
-  isFetching.value = true;
   const at: string | null = sessionStorage.getItem('discord_access_token');
 
   if (!at) return;
@@ -151,6 +153,7 @@ onMounted(async () => {
 });
 
 const fetchCurrentUser = async (at: string): Promise<void> => {
+  isFetching.value = true;
   try {
     const result = await fetch('https://discord.com/api/users/@me', {
       headers: {
@@ -168,6 +171,7 @@ const fetchCurrentUser = async (at: string): Promise<void> => {
 };
 
 const fetchCurrentUserConnection = async (at: string): Promise<void> => {
+  isFetchingConnection.value = true;
   try {
     const result = await fetch(
       'https://discord.com/api/users/@me/connections',
