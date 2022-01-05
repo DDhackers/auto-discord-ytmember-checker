@@ -56,6 +56,8 @@
 import { inject, onMounted, ref } from 'vue';
 import Async from './Async.vue';
 
+const toast: any = inject('toast');
+
 const tempToken = inject('tempToken');
 const googleClientId = inject('googleClientId');
 const apiURL = inject('apiURL');
@@ -105,8 +107,9 @@ onMounted(async () => {
     userInfo.value = response.message;
 
     isAuthed.value = true;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    toast.error(`${error.message}`.trim());
   } finally {
     isFetching.value = false;
   }

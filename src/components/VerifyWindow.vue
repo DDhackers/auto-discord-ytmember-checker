@@ -8,13 +8,25 @@
     <p>這是一個可自動驗證會員的應用程式</p>
     <p>
       將會需要您的
-      <strong class="text-indigo-400">discord</strong>
+      <strong class="text-indigo-400">
+        discord
+        <span class="cursor-pointer" @click="openLinkHint">
+          (需連結 youtube)
+        </span>
+      </strong>
       以及
-      <strong class="text-red-400">youtube</strong>
+      <strong class="text-red-400">youtube (google 帳戶)</strong>
       授權
       <br />
       才有辦法為您做自動驗證
     </p>
+    <div>
+      <a href="/privacy" class="text-sm text-indigo-300 underline">
+        隱私權政策
+      </a>
+      <span class="mx-1"></span>
+      <a href="/terms" class="text-sm text-indigo-300 underline">使用條款</a>
+    </div>
     <p class="mt-2">點擊下方按鈕完成</p>
   </div>
   <div class="h-4"></div>
@@ -59,14 +71,24 @@
       <div v-if="toastText" class="toast bg-teal-600">{{ toastText }}</div>
     </Transition>
   </Teleport>
+
+  <Teleport to="body">
+    <div class="layout" v-show="isDialogOpen" @click="isDialogOpen = false">
+      <div class="layout-mask"></div>
+      <Transition name="dialog">
+        <div v-if="isDialogOpen" class="dialog-content" @click.stop>
+          <img src="/link_youtube.png" />
+        </div>
+      </Transition>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { inject, ref, watch, watchEffect } from 'vue';
+import { inject, provide, ref, watch, watchEffect } from 'vue';
 import DiscordSection from './DiscordSection.vue';
 import GoogleSection from './GoogleSection.vue';
 
-import { randomNAString } from '../lib/random';
 import Async from './Async.vue';
 
 const tempToken = inject('tempToken');
@@ -77,8 +99,18 @@ const discordAccessToken = ref<string>('');
 
 const isTokenSending = ref<boolean>(false);
 const isSuccess = ref<boolean>(false);
+const isDialogOpen = ref<boolean>(false);
 const errorText = ref<string>('');
 const toastText = ref<string>('');
+
+const toast = (msg: string): void => {
+  toastText.value = msg;
+};
+toast.error = (msg: string): void => {
+  errorText.value = msg;
+};
+
+provide('toast', toast);
 
 watch(
   () => errorText.value,
@@ -105,6 +137,10 @@ watchEffect(() => {
   }
 });
 
+const openLinkHint = (): void => {
+  isDialogOpen.value = true;
+};
+
 const sendTokens = async () => {
   if (isSuccess.value) return;
   isTokenSending.value = true;
@@ -121,16 +157,17 @@ const sendTokens = async () => {
         'Content-Type': 'application/json'
       }
     });
-    console.log({ result });
 
     if (!result.ok) throw result;
-    toastText.value = '所有驗證都已完成 可以關閉此頁面了';
+    toastText.value = `${result}`.trim();
     isSuccess.value = true;
+
     history.replaceState(null, '', '/');
     sessionStorage.clear();
     localStorage.clear();
   } catch (error: any) {
     if (error.status) handleResponseError(error.status);
+    if (error.message) errorText.value = `${error.message}`.trim();
   } finally {
     isTokenSending.value = false;
   }
@@ -148,20 +185,20 @@ enum ResponseStatus {
 const handleResponseError = (status: ResponseStatus): void => {
   switch (status) {
     case ResponseStatus.BAD_REQUEST:
-      errorText.value = '錯誤的請求';
+      // errorText.value = '錯誤的請求';
       break;
     case ResponseStatus.UNAUTHORIZED:
-      errorText.value = '使用者未驗證';
+      // errorText.value = '使用者未驗證';
       break;
     case ResponseStatus.TOO_MANY_REQUESTS:
-      errorText.value = '請求量過多';
+      // errorText.value = '請求量過多';
       break;
     case ResponseStatus.INTERNAL_SERVER_ERROR:
-      errorText.value = '伺服器內部錯誤';
+      // errorText.value = '伺服器內部錯誤';
       break;
 
     default:
-      errorText.value = '未知的錯誤';
+      // errorText.value = '未知的錯誤';
       break;
   }
 };

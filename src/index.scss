@@ -7,6 +7,11 @@ html {
   @apply text-zinc-300;
 }
 
+.divider {
+  @apply w-full bg-zinc-800;
+  height: 1px;
+}
+
 .btn {
   @apply px-3;
   @apply py-1;
@@ -41,6 +46,7 @@ html {
   @apply -translate-x-1/2;
   @apply px-5;
   @apply py-3;
+  @apply whitespace-pre-wrap;
 }
 
 .toast-enter-active,
@@ -56,4 +62,38 @@ html {
 .toast-leave-from,
 .toast-enter-to {
   @apply top-6;
+}
+
+.layout {
+  @apply fixed z-30;
+  @apply left-0 top-0;
+  @apply w-full h-full;
+  @apply flex justify-center items-center;
+  @apply p-4;
+}
+
+.layout-mask {
+  @apply absolute;
+  @apply left-0 top-0;
+  @apply w-full h-full;
+  @apply bg-zinc-800 opacity-70;
+}
+
+.dialog-content {
+  @apply z-10;
+}
+
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: 0.17s;
+}
+
+.dialog-enter-from,
+.dialog-leave-to {
+  transform: scale(0.4);
+}
+
+.dialog-leave-from,
+.dialog-enter-to {
+  transform: scale(1);
 }
