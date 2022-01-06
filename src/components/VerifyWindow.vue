@@ -159,7 +159,8 @@ const sendTokens = async () => {
     });
 
     if (!result.ok) throw result;
-    toastText.value = `${result}`.trim();
+    const res = await result.json();
+    toastText.value = `${res.message}`.trim();
     isSuccess.value = true;
 
     history.replaceState(null, '', '/');
