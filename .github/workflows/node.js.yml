@@ -1,0 +1,28 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [17.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pnpm/action-setup@v2.0.1
+      with:
+        version: latest
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - run: pnpm install
+    - run: pnpm run build
+    - run: scp -r ./dist/* ${{ secrets.WEB_SERVER_USERNAME }}@${{ secrets.WEB_SERVER_IP }}:${{ secrets.WEB_SERVER_PATH }}
