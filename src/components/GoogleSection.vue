@@ -103,6 +103,7 @@ onMounted(async () => {
     emit('auth', googleCode);
 
     if (!result.ok) throw result;
+    if (result != 200) throw result;
     const response = (await result.json()) as CallBackResponse;
     userInfo.value = response.message;
 
