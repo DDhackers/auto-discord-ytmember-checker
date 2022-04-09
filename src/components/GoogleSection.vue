@@ -105,7 +105,7 @@ onMounted(async () => {
     if (!result.ok) throw result;
     
     const response = (await result.json()) as CallBackResponse;    
-    if (response.code != 200) throw result;
+    if (response.code != 200) throw response;
     userInfo.value = response.message;
 
     isAuthed.value = true;
