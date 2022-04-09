@@ -19,7 +19,7 @@ if (['/privacy', '/terms'].includes(location.pathname)) {
     '1001497098111-tbs3uidhom0r2p6gjaa8kqed4qp3oc61.apps.googleusercontent.com'
   );
   app.provide('discordClientId', '758222559392432160');
-  app.provide('apiURL', 'https://api.junrasp.com');
+  app.provide('apiURL', 'https://api.konnokai.me');
 
   app.mount('#app');
 }
