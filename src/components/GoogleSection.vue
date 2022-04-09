@@ -103,8 +103,9 @@ onMounted(async () => {
     emit('auth', googleCode);
 
     if (!result.ok) throw result;
-    if (result != 200) throw result;
-    const response = (await result.json()) as CallBackResponse;
+    
+    const response = (await result.json()) as CallBackResponse;    
+    if (response.code != 200) throw result;
     userInfo.value = response.message;
 
     isAuthed.value = true;
