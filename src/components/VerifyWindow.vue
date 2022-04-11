@@ -79,8 +79,11 @@
     <div class="layout" v-show="isDialogOpen" @click="isDialogOpen = false">
       <div class="layout-mask"></div>
       <Transition name="dialog">
-        <div v-if="isDialogOpen" class="dialog-content" @click.stop>
-          <img src="/link_youtube.png" />
+        <div v-if="isDialogOpen" class="dialog-content">
+          <div class="text-center">
+            <img src="/link_youtube.png" />
+            <p class="text-gray-400">[隨意點擊後關閉]</p>
+          </div>
         </div>
       </Transition>
     </div>
@@ -94,13 +97,17 @@
     >
       <div class="layout-mask"></div>
       <Transition name="dialog">
-        <div v-if="isGoogleHintShow" class="dialog-content" @click.stop>
-          <div class="bg-neutral-800 b-rad-4 p-4 flex flex-col items-center">
+        <div v-if="isGoogleHintShow" class="dialog-content">
+          <div
+            class="bg-neutral-800 b-rad-4 p-4 flex flex-col items-center text-center"
+          >
             <p>目前因為 google 的關係所以需要特別按連結才能正常登入</p>
             <p class="mb-2">點選左下角的進階，然後 "前往"</p>
             <img src="/google_auth_hint.jpg" class="mb-2" />
             <p class="my-2">並同意 YouTube 的授權</p>
             <img src="/agree_youtube_auth.png" />
+
+            <p class="text-gray-400">[隨意點擊後關閉]</p>
           </div>
         </div>
       </Transition>
