@@ -15,7 +15,22 @@
           }"
           @click="openUrl"
         >
-          <span>{{ isAuthed ? '已驗證' : '開始驗證' }} google</span>
+          <span>
+            {{ isAuthed ? '已驗證' : '開始驗證' }} google
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 inline-block"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              @click.stop="$emit('show-google-hint')"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </span>
         </button>
 
         <svg
@@ -62,7 +77,7 @@ const tempToken = inject('tempToken');
 const googleClientId = inject('googleClientId');
 const apiURL = inject('apiURL');
 
-const emit = defineEmits(['auth']);
+const emit = defineEmits(['auth', 'show-google-hint']);
 
 interface UserInfo {
   UserName: string;
@@ -103,8 +118,8 @@ onMounted(async () => {
     emit('auth', googleCode);
 
     if (!result.ok) throw result;
-    
-    const response = (await result.json()) as CallBackResponse;    
+
+    const response = (await result.json()) as CallBackResponse;
     if (response.code != 200) throw response;
     userInfo.value = response.message;
 
