@@ -20,13 +20,7 @@
       <br />
       才有辦法為您做自動驗證
     </p>
-    <div>
-      <a href="/privacy" class="text-sm text-indigo-300 underline">
-        隱私權政策
-      </a>
-      <span class="mx-1"></span>
-      <a href="/terms" class="text-sm text-indigo-300 underline">使用條款</a>
-    </div>
+
     <p class="mt-2">點擊下方按鈕完成</p>
   </div>
   <div class="h-4"></div>
@@ -116,11 +110,12 @@
 </template>
 
 <script setup lang="ts">
-import { inject, provide, ref, watch, watchEffect } from 'vue';
+import { inject, onMounted, provide, ref, watch, watchEffect } from 'vue';
 import DiscordSection from './DiscordSection.vue';
 import GoogleSection from './GoogleSection.vue';
 
 import Async from './Async.vue';
+const hasReadGoogleHint = !!sessionStorage.getItem('hasReadGoogleHint');
 
 const tempToken = inject('tempToken');
 const apiURL = inject('apiURL');
@@ -131,7 +126,7 @@ const discordAccessToken = ref<string>('');
 const isTokenSending = ref<boolean>(false);
 const isSuccess = ref<boolean>(false);
 const isDialogOpen = ref<boolean>(false);
-const isGoogleHintShow = ref<boolean>(true);
+const isGoogleHintShow = ref<boolean>(!hasReadGoogleHint);
 const errorText = ref<string>('');
 const toastText = ref<string>('');
 
@@ -167,6 +162,10 @@ watchEffect(() => {
       window.scrollTo(0, document.body.scrollHeight);
     }, 300);
   }
+});
+
+onMounted(() => {
+  sessionStorage.setItem('hasReadGoogleHint', '1');
 });
 
 const openLinkHint = (): void => {
