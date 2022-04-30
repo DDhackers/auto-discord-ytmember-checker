@@ -17,6 +17,7 @@ export default defineConfig({
       '@': resolve(__dirname, 'src')
     }
   },
+  base: '/stream/',
   plugins: [vue()],
   build: {
     rollupOptions: {
@@ -24,6 +25,9 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         'privacy/index': resolve(__dirname, 'privacy/index.html'),
         'terms/index': resolve(__dirname, 'terms/index.html')
+      },
+      output: {
+        dir: resolve(__dirname, 'dist/stream')
       }
     }
   }

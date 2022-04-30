@@ -111,10 +111,10 @@
 
 <script setup lang="ts">
 import { inject, onMounted, provide, ref, watch, watchEffect } from 'vue';
-import DiscordSection from './DiscordSection.vue';
-import GoogleSection from './GoogleSection.vue';
+import DiscordSection from '../components/DiscordSection.vue';
+import GoogleSection from '../components/GoogleSection.vue';
 
-import Async from './Async.vue';
+import Async from '../components/Async.vue';
 const hasReadGoogleHint = !!sessionStorage.getItem('hasReadGoogleHint');
 
 const tempToken = inject('tempToken');
