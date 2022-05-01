@@ -17,7 +17,6 @@
       </a>
     </div>
   </div>
-  <div class="h-5"></div>
   <Footer />
 </template>
 
@@ -56,3 +55,9 @@ const isLogin = computed(
     window.location.pathname === '/stream/login/'
 );
 </script>
+
+<style scoped>
+.container {
+  min-height: calc(100vh - 112px);
+}
+</style>
