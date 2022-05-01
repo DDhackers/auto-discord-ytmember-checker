@@ -39,7 +39,7 @@
     <div class="h-7"></div>
     <div class="flex-wrap justify-space-between items-center sm:flex">
       <div class="flex-1 my-3">
-        <img src="video_dance_odottemita.png" alt="" />
+        <img src="/video_dance_odottemita.png" alt="" />
       </div>
       <div class="w-8"></div>
       <div class="flex-1 my-3">
