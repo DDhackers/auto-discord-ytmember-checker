@@ -140,7 +140,7 @@ const openUrl = () => {
     include_granted_scopes=true&
     response_type=code&
     state=${tempToken}&
-    redirect_uri=${location.origin}&
+    redirect_uri=https%3A%2F%2Fdcbot.konnokai.me%2Fstream%2Flogin&
     client_id=${googleClientId}`
     .replace(/\n| /g, '')
     .replace(/{{BLANK}}/g, ' ');
