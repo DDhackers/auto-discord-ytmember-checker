@@ -3,7 +3,7 @@
     class="w-full fixed shadow-lg h-14 flex justify-space-between items-center bg-neutral-800 px-4"
   >
     <div class="left-side">
-      <a href="/" class="cursor-pointer flex items-center">
+      <a href="/stream/" class="cursor-pointer flex items-center">
         <img src="/DYML.png" class="w-10 h-10 mr-2" />
         直播小幫手
       </a>
