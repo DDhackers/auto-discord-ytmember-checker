@@ -193,7 +193,7 @@ const fetchCurrentUserConnection = async (at: string): Promise<void> => {
 
 const openDiscord = () => {
   if (isAuthed.value) return;
-  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=https%3A%2F%2Fdcbot.konnokai.me%2Fstream%2Flogin%2FDiscordCallBack&response_type=token&scope=connections%20identify`;
+  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=https%3A%2F%2Fdcbot.konnokai.me%2Fstream%2Flogin&response_type=token&scope=connections%20identify`;
 };
 </script>
 
