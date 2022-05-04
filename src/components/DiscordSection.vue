@@ -48,13 +48,10 @@
             <div
               class="discord_banner bg-neutral-500 w-full"
               :class="{ got_banner: !isNoBanner(userInfo) }"
+              :style="{ backgroundColor: userInfo.banner_color }"
             >
-              <div
-                v-if="isNoBanner(userInfo)"
-                :style="{ backgroundColor: userInfo.banner_color }"
-              ></div>
               <img
-                v-else
+                v-if="!isNoBanner(userInfo)"
                 :src="`https://cdn.discordapp.com/banners/${userInfo.id}/${userInfo.banner}?size=320`"
                 class="w-full"
               />
