@@ -29,10 +29,7 @@
       <DiscordSection @auth="(v) => (discordAccessToken = v)" />
     </div>
     <div class="w-full sm:w-1/2">
-      <GoogleSection
-        @auth="(v) => (googleAccessToken = v)"
-        @show-google-hint="isGoogleHintShow = true"
-      />
+      <GoogleSection @auth="(v) => (googleAccessToken = v)" />
     </div>
   </div>
 
@@ -82,31 +79,6 @@
       </Transition>
     </div>
   </Teleport>
-
-  <Teleport to="body">
-    <div
-      class="layout"
-      v-show="isGoogleHintShow"
-      @click="isGoogleHintShow = false"
-    >
-      <div class="layout-mask"></div>
-      <Transition name="dialog">
-        <div v-if="isGoogleHintShow" class="dialog-content">
-          <div
-            class="bg-neutral-800 b-rad-4 p-4 flex flex-col items-center text-center"
-          >
-            <p>目前因為 google 的關係所以需要特別按連結才能正常登入</p>
-            <p class="mb-2">點選左下角的進階，然後 "前往"</p>
-            <img src="/google_auth_hint.jpg" class="mb-2" />
-            <p class="my-2">並同意 YouTube 的授權</p>
-            <img src="/agree_youtube_auth.png" />
-
-            <p class="text-gray-400">[隨意點擊後關閉]</p>
-          </div>
-        </div>
-      </Transition>
-    </div>
-  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -115,7 +87,6 @@ import DiscordSection from '../components/DiscordSection.vue';
 import GoogleSection from '../components/GoogleSection.vue';
 
 import Async from '../components/Async.vue';
-const hasReadGoogleHint = !!sessionStorage.getItem('hasReadGoogleHint');
 
 const tempToken = inject('tempToken');
 const apiURL = inject('apiURL');
@@ -126,7 +97,6 @@ const discordAccessToken = ref<string>('');
 const isTokenSending = ref<boolean>(false);
 const isSuccess = ref<boolean>(false);
 const isDialogOpen = ref<boolean>(false);
-const isGoogleHintShow = ref<boolean>(!hasReadGoogleHint);
 const errorText = ref<string>('');
 const toastText = ref<string>('');
 
@@ -162,10 +132,6 @@ watchEffect(() => {
       window.scrollTo(0, document.body.scrollHeight);
     }, 300);
   }
-});
-
-onMounted(() => {
-  sessionStorage.setItem('hasReadGoogleHint', '1');
 });
 
 const openLinkHint = (): void => {

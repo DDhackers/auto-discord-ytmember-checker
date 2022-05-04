@@ -45,9 +45,17 @@
           class="info_card card bg-zinc-900 my-3 mx-auto sm:mx-0"
         >
           <div class="w-full">
-            <div class="discord_banner bg-neutral-500 w-full">
+            <div
+              class="discord_banner bg-neutral-500 w-full"
+              :class="{ got_banner: !isNoBanner(userInfo) }"
+            >
+              <div
+                v-if="isNoBanner(userInfo)"
+                :style="{ backgroundColor: userInfo.banner_color }"
+              ></div>
               <img
-                :src="`https://cdn.discordapp.com/banners/${userInfo.id}/${userInfo.banner}.png?size=320`"
+                v-else
+                :src="`https://cdn.discordapp.com/banners/${userInfo.id}/${userInfo.banner}?size=320`"
                 class="w-full"
               />
             </div>
@@ -56,7 +64,7 @@
                 class="w-24 h-24 bg-zinc-900 p-1 absolute -top-12 rounded-full flex justify-center items-center"
               >
                 <img
-                  :src="`https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}.png?size=96`"
+                  :src="`https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}?size=96`"
                   class="rounded-full"
                 />
               </div>
@@ -94,7 +102,6 @@ import Async from './Async.vue';
 import youtubeIcon from '../assets/youtube.vue';
 
 const discordClientId = inject('discordClientId');
-const errorText = ref<string>('');
 
 interface DiscordUser {
   accent_color: string;
@@ -152,6 +159,9 @@ onMounted(async () => {
   fetchCurrentUserConnection(at);
 });
 
+const isNoBanner = (userInfo: DiscordUser): Boolean =>
+  userInfo.banner === null || userInfo.banner === 'null';
+
 const fetchCurrentUser = async (at: string): Promise<void> => {
   isFetching.value = true;
   try {
@@ -199,6 +209,9 @@ const openDiscord = () => {
 
 <style lang="scss">
 .discord_banner {
-  min-height: 120px;
+  min-height: 60px;
+  &.got_banner {
+    min-height: 120px;
+  }
 }
 </style>
