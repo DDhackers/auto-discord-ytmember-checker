@@ -16,6 +16,28 @@
           @click="openUrl"
         >
           <span>{{ isAuthed ? '已驗證' : '開始驗證' }} google</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 ml-1 inline"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            @mouseover.stop="isHintOpen = true"
+            @mouseleave.stop="isHintOpen = false"
+            @click.stop
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+
+          <div class="hint text-xs" :class="{ active: isHintOpen }">
+            獲得授權以後，機器人不會對您的 YouTube
+            影片、評價、留言和字幕做出任何變更，只會讀取會員購買資格與記錄。我們不會將這些資訊用作直播小幫手會員認證以外的用途，敬請安心使用。
+          </div>
         </button>
 
         <svg
@@ -73,6 +95,7 @@ const isFetching = ref<boolean>(false);
 const userInfo = ref({} as UserInfo);
 
 const isAuthed = ref<boolean>(false);
+const isHintOpen = ref<boolean>(false);
 
 interface CallBackResponse {
   code: number;
@@ -133,3 +156,18 @@ const openUrl = () => {
   location.href = url;
 };
 </script>
+
+<style>
+.hint {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translate(-50%, 0);
+  @apply bg-slate-500 text-white rounded-lg p-4 w-80;
+}
+
+.hint.active {
+  display: block;
+}
+</style>
