@@ -10,7 +10,7 @@
       將會需要您的
       <strong class="text-indigo-400">
         discord
-        <span class="cursor-pointer" @click="openLinkHint">
+        <span class="cursor-pointer underline" @click="openLinkHint">
           (需連結 youtube)
         </span>
       </strong>
@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, provide, ref, watch, watchEffect } from 'vue';
+import { inject, provide, ref, watch, watchEffect } from 'vue';
 import DiscordSection from '../components/DiscordSection.vue';
 import GoogleSection from '../components/GoogleSection.vue';
 
