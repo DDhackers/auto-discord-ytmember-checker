@@ -24,11 +24,11 @@
     <p class="mt-2">點擊下方按鈕完成</p>
   </div>
   <div class="h-4"></div>
-  <div class="flex flex-wrap">
+  <div class="flex flex-wrap justify-center">
     <div class="w-full sm:w-1/2">
       <DiscordSection @auth="(v) => (discordAccessToken = v)" />
     </div>
-    <div class="w-full sm:w-1/2">
+    <div class="w-full sm:w-1/2" v-if="!!discordAccessToken">
       <GoogleSection @auth="(v) => (googleAccessToken = v)" />
     </div>
   </div>
