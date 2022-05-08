@@ -8,14 +8,14 @@
 
     <div class="h-4"></div>
 
-    <div v-if="isHompage" class="w-full flex justify-center">
+    <!--<div v-if="isHompage" class="w-full flex justify-center">
       <a
         class="btn cursor-pointer bg-indigo-600 active:bg-indigo-500 mb-14"
         href="/stream/login"
       >
         點此開始驗證
       </a>
-    </div>
+    </div>-->
   </div>
   <Footer />
 </template>
