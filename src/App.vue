@@ -4,7 +4,7 @@
   <div class="container mx-auto p-4">
     <Page404 v-if="isNotFound" />
     <HomePage v-else-if="isHompage" />
-    //<VerifyWindow v-else-if="isLogin" />
+     <!--<VerifyWindow v-else-if="isLogin" />-->
 
     <div class="h-4"></div>
     
