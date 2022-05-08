@@ -95,51 +95,22 @@ interface CallBackResponse {
 }
 
 onMounted(async () => {
-  const discordToken = sessionStorage.getItem('discord_token');
-  if (discordToken)
-  {
-	try {
-	  const result = await fetch(
-	    `${apiURL}/GetGoogleData?token=${discordToken}`,
-	    {
-	  	  method: 'GET',
-		  headers: {
-			'Content-Type': 'application/json'
-		}
-	  }
-	);
-
-	  if (!result.ok) throw result;
-
-	  const response = (await result.json()) as CallBackResponse;
-	  if (response.code != 200) throw response;
-	  userInfo.value = response.message;
-
-	  isAuthed.value = true;
-	} catch (error: any) {
-	  console.error(error);
-	  toast.error(`${error.message}`.trim());
-	} finally {
-	  isFetching.value = false;
-	}
-  }
-	
   const currentUrl = new URL(location.href);
   
-  if (!currentUrl.searchParams.get('state')) return;
+  if (currentUrl.searchParams.get('state') == 'discord') return;
   
-  const googleCode =
-    currentUrl.searchParams.get('code') ||
-    sessionStorage.getItem('google_code');
+  const googleCode = currentUrl.searchParams.get('code');
+
+  const discordToken = sessionStorage.getItem('discord_token');
 
   if (!googleCode) return;
-  sessionStorage.setItem('google_code', googleCode);
+  if (!discordToken) return;
 
   isFetching.value = true;
 
   try {
     const result = await fetch(
-      `${apiURL}/GoogleCallBack?code=${googleCode}&state=${tempToken}`,
+        `${apiURL}/GoogleCallBack?code=${googleCode}&state=${discordToken}`,
       {
         method: 'GET',
         headers: {
@@ -191,7 +162,7 @@ const openUrl = () => {
     include_granted_scopes=true&
     response_type=code&
     state=${sessionStorage.getItem('discordToken')}&
-    redirect_uri=${location.origin}&
+    redirect_uri=${location.origin}/stream/login&
     client_id=${googleClientId}`
     .replace(/\n| /g, '')
     .replace(/{{BLANK}}/g, ' ');

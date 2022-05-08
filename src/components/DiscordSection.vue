@@ -108,10 +108,20 @@ const isFetching = ref<boolean>(false);
 
 const isAuthed = computed<boolean>(() => !!userInfo.value.id);
 
+interface CallBackResponse {
+        code: number;
+    message: ApiResult;
+}
+
+interface ApiResult {
+        Token: string;
+        DiscordData: DiscordUser;
+}
+
 onMounted(async () => {
   const currentUrl = new URL(location.href);
   
-  if (currentUrl.searchParams.get('state') || currentUrl.searchParams.get('state') != discord) return;
+  if (currentUrl.searchParams.get('state') != 'discord') return;
   
   const discordCode =
     currentUrl.searchParams.get('code');
@@ -121,15 +131,15 @@ onMounted(async () => {
   isFetching.value = true;
   
    try {
-    const result = await fetch(
-      `${apiURL}/DiscordCallBack?code=${discordCode}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+        const result = await fetch(
+          `${apiURL}/DiscordCallBack?code=${discordCode}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
     emit('auth', discordCode);
 
     if (!result.ok) throw result;
@@ -141,8 +151,32 @@ onMounted(async () => {
 	sessionStorage.setItem('discord_token', discordToken);
   
     userInfo.value = response.message.DiscordData;
+      
+    try {
+        const result = await fetch(`${apiURL}/GetGoogleData?token=${discordToken}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
 
-    isAuthed.value = true;
+        if (!result.ok) throw result;
+
+        const response = (await result.json()) as CallBackResponse;
+        if (response.code == 200) {
+               //userInfo.value = response.message;
+
+               //isAuthed.value = true;
+        }
+    } catch (error: any) {
+        console.error(error);
+        toast.error(`${error.message}`.trim());
+    } finally {
+        isFetching.value = false;
+    }
+
   } catch (error: any) {
     console.error(error);
     toast.error(`${error.message}`.trim());
