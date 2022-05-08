@@ -193,7 +193,7 @@ const fetchCurrentUserConnection = async (at: string): Promise<void> => {
 
 const openDiscord = () => {
   if (isAuthed.value) return;
-  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${location.origin}&response_type=token&scope=connections%20identify`;
+  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${location.origin}&response_type=authorization_code&scope=identify`;
 };
 </script>
 
