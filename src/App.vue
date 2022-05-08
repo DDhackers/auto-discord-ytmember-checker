@@ -4,10 +4,13 @@
   <div class="container mx-auto p-4">
     <Page404 v-if="isNotFound" />
     <HomePage v-else-if="isHompage" />
-    <VerifyWindow v-else-if="isLogin" />
+    //<VerifyWindow v-else-if="isLogin" />
 
     <div class="h-4"></div>
-
+    
+    <div v-if="isHompage" class="w-full flex justify-center">
+    會限功能暫時停止登入
+    </div>
     <!--<div v-if="isHompage" class="w-full flex justify-center">
       <a
         class="btn cursor-pointer bg-indigo-600 active:bg-indigo-500 mb-14"
