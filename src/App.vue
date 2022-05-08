@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import VerifyWindow from './page/VerifyWindow.vue';
+<!--import VerifyWindow from './page/VerifyWindow.vue';-->
 import HomePage from './page/HomePage.vue';
 import Footer from './components/Footer.vue';
 import Header from './components/Header.vue';
@@ -52,11 +52,11 @@ const isHompage = computed(
     window.location.pathname === '/stream' ||
     window.location.pathname === '/stream/'
 );
-const isLogin = computed(
+<!--const isLogin = computed(
   () =>
     window.location.pathname === '/stream/login' ||
     window.location.pathname === '/stream/login/'
-);
+);-->
 </script>
 
 <style scoped>
