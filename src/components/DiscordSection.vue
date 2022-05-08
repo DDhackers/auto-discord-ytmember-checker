@@ -37,7 +37,7 @@
 
     <div class="flex mb-5">
       <Async
-        :loading="isFetching || isFetchingConnection"
+        :loading="isFetching"
         class="flex justify-center w-full"
       >
         <div
@@ -69,17 +69,6 @@
                   #{{ userInfo.discriminator }}
                 </span>
               </div>
-
-              <div class="h-4"></div>
-              <div class="divider"></div>
-              <div class="h-3"></div>
-
-              <div v-if="connections.length" class="flex">
-                <youtubeIcon class="h-7 inline mr-2" />
-                {{ connections[0].name }}
-              </div>
-              <div v-else>未連結 youtube</div>
-              <div class="h-3"></div>
             </div>
           </div>
         </div>
@@ -91,9 +80,9 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, ref } from 'vue';
 import Async from './Async.vue';
-import youtubeIcon from '../assets/youtube.vue';
 
 const discordClientId = inject('discordClientId');
+const apiURL = inject('apiURL');
 const errorText = ref<string>('');
 
 interface DiscordUser {
@@ -111,89 +100,60 @@ interface DiscordUser {
   username: string;
 }
 
-interface Connection {
-  friend_sync: boolean;
-  id: string;
-  name: string;
-  show_activity: boolean;
-  type: string;
-  verified: boolean;
-  visibility: number;
-}
-
 const toast: any = inject('toast');
 
 const emit = defineEmits(['auth']);
 const userInfo = ref<DiscordUser>({} as DiscordUser);
-const connections = ref<Array<Connection>>([]);
 const isFetching = ref<boolean>(false);
-const isFetchingConnection = ref<boolean>(false);
 
 const isAuthed = computed<boolean>(() => !!userInfo.value.id);
 
 onMounted(async () => {
-  const fragment = new URLSearchParams(window.location.hash.slice(1));
-
-  const [accessToken] = [
-    fragment.get('access_token') ||
-      sessionStorage.getItem('discord_access_token')
-  ];
-
-  if (accessToken) {
-    emit('auth', accessToken);
-    sessionStorage.setItem('discord_access_token', accessToken);
-  }
-
-  const at: string | null = sessionStorage.getItem('discord_access_token');
-
-  if (!at) return;
-
-  fetchCurrentUser(at);
-  fetchCurrentUserConnection(at);
-});
-
-const fetchCurrentUser = async (at: string): Promise<void> => {
+  const currentUrl = new URL(location.href);
+  
+  if (currentUrl.searchParams.get('state') || currentUrl.searchParams.get('state') != discord) return;
+  
+  const discordCode =
+    currentUrl.searchParams.get('code');
+	
+  if (!discordCode) return;
+	
   isFetching.value = true;
-  try {
-    const result = await fetch('https://discord.com/api/users/@me', {
-      headers: {
-        authorization: `Bearer ${at}`
-      }
-    });
-    const response = (await result.json()) as DiscordUser;
-    userInfo.value = response;
-  } catch (error: any) {
-    console.error(error);
-    toast.error(`${error}`);
-  } finally {
-    isFetching.value = false;
-  }
-};
-
-const fetchCurrentUserConnection = async (at: string): Promise<void> => {
-  isFetchingConnection.value = true;
-  try {
+  
+   try {
     const result = await fetch(
-      'https://discord.com/api/users/@me/connections',
+      `${apiURL}/DiscordCallBack?code=${discordCode}`,
       {
+        method: 'GET',
         headers: {
-          authorization: `Bearer ${at}`
+          'Content-Type': 'application/json'
         }
       }
     );
-    const response = (await result.json()) as Array<Connection>;
-    connections.value = response.filter(({ type }) => type === 'youtube');
+    emit('auth', discordCode);
+
+    if (!result.ok) throw result;
+
+    const response = (await result.json()) as CallBackResponse;
+    if (response.code != 200) throw response;
+	const discordToken = response.message.Token;
+	
+	sessionStorage.setItem('discord_token', discordToken);
+  
+    userInfo.value = response.message.DiscordData;
+
+    isAuthed.value = true;
   } catch (error: any) {
     console.error(error);
-    toast.error(`${error}`);
+    toast.error(`${error.message}`.trim());
   } finally {
-    isFetchingConnection.value = false;
+    isFetching.value = false;
   }
-};
+});
 
 const openDiscord = () => {
   if (isAuthed.value) return;
-  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${location.origin}&response_type=authorization_code&scope=identify`;
+  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${location.origin}/stream/login&response_type=code&scope=identify&state=discord`;
 };
 </script>
 

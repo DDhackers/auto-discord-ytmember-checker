@@ -95,7 +95,39 @@ interface CallBackResponse {
 }
 
 onMounted(async () => {
+  const discordToken = sessionStorage.getItem('discord_token');
+  if (discordToken)
+  {
+	try {
+	  const result = await fetch(
+	    `${apiURL}/GetGoogleData?token=${discordToken}`,
+	    {
+	  	  method: 'GET',
+		  headers: {
+			'Content-Type': 'application/json'
+		}
+	  }
+	);
+
+	  if (!result.ok) throw result;
+
+	  const response = (await result.json()) as CallBackResponse;
+	  if (response.code != 200) throw response;
+	  userInfo.value = response.message;
+
+	  isAuthed.value = true;
+	} catch (error: any) {
+	  console.error(error);
+	  toast.error(`${error.message}`.trim());
+	} finally {
+	  isFetching.value = false;
+	}
+  }
+	
   const currentUrl = new URL(location.href);
+  
+  if (!currentUrl.searchParams.get('state')) return;
+  
   const googleCode =
     currentUrl.searchParams.get('code') ||
     sessionStorage.getItem('google_code');
@@ -118,12 +150,31 @@ onMounted(async () => {
     emit('auth', googleCode);
 
     if (!result.ok) throw result;
+	
+	try {
+		const result = await fetch(
+		  `${apiURL}/GetGoogleData?token=${discordToken}`,
+		  {
+			method: 'GET',
+			headers: {
+			  'Content-Type': 'application/json'
+			}
+		  }
+		);
 
-    const response = (await result.json()) as CallBackResponse;
-    if (response.code != 200) throw response;
-    userInfo.value = response.message;
+		if (!result.ok) throw result;
 
-    isAuthed.value = true;
+		const response = (await result.json()) as CallBackResponse;
+		if (response.code != 200) throw response;
+		userInfo.value = response.message;
+
+		isAuthed.value = true;
+	  } catch (error: any) {
+		console.error(error);
+		toast.error(`${error.message}`.trim());
+	  } finally {
+		isFetching.value = false;
+	  }	
   } catch (error: any) {
     console.error(error);
     toast.error(`${error.message}`.trim());
@@ -139,7 +190,7 @@ const openUrl = () => {
     access_type=offline&
     include_granted_scopes=true&
     response_type=code&
-    state=${tempToken}&
+    state=${sessionStorage.getItem('discordToken')}&
     redirect_uri=${location.origin}&
     client_id=${googleClientId}`
     .replace(/\n| /g, '')
