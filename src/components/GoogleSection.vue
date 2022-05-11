@@ -105,9 +105,9 @@ interface CallBackResponse {
 
 onMounted(async () => {
   const currentUrl = new URL(location.href);
-  
+
   if (currentUrl.searchParams.get('state') == 'discord') return;
-  
+
   const googleCode = currentUrl.searchParams.get('code');
 
   const discordToken = sessionStorage.getItem('discord_token');
@@ -119,7 +119,7 @@ onMounted(async () => {
 
   try {
     const result = await fetch(
-        `${apiURL}/GoogleCallBack?code=${googleCode}&state=${discordToken}`,
+      `${apiURL}/GoogleCallBack?code=${googleCode}&state=${discordToken}`,
       {
         method: 'GET',
         headers: {
@@ -130,31 +130,31 @@ onMounted(async () => {
     emit('auth', googleCode);
 
     if (!result.ok) throw result;
-	
-	try {
-		const result = await fetch(
-		  `${apiURL}/GetGoogleData?token=${discordToken}`,
-		  {
-			method: 'GET',
-			headers: {
-			  'Content-Type': 'application/json'
-			}
-		  }
-		);
 
-		if (!result.ok) throw result;
+    try {
+      const result = await fetch(
+        `${apiURL}/GetGoogleData?token=${discordToken}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
-		const response = (await result.json()) as CallBackResponse;
-		if (response.code != 200) throw response;
-		userInfo.value = response.message;
+      if (!result.ok) throw result;
 
-		isAuthed.value = true;
-	  } catch (error: any) {
-		console.error(error);
-		toast.error(`${error.message}`.trim());
-	  } finally {
-		isFetching.value = false;
-	  }	
+      const response = (await result.json()) as CallBackResponse;
+      if (response.code != 200) throw response;
+      userInfo.value = response.message;
+
+      isAuthed.value = true;
+    } catch (error: any) {
+      console.error(error);
+      toast.error(`${error.message}`.trim());
+    } finally {
+      isFetching.value = false;
+    }
   } catch (error: any) {
     console.error(error);
     toast.error(`${error.message}`.trim());
@@ -165,14 +165,16 @@ onMounted(async () => {
 
 const openUrl = () => {
   if (isAuthed.value) return;
-  const url: string = `https://accounts.google.com/o/oauth2/v2/auth?
-    scope=https://www.googleapis.com/auth/userinfo.profile{{BLANK}}https%3A//www.googleapis.com/auth/youtube.force-ssl&
-    access_type=offline&
-    include_granted_scopes=true&
-    response_type=code&
-    state=${sessionStorage.getItem('discordToken')}&
-    redirect_uri=${location.origin}/stream/login&
-    client_id=${googleClientId}`
+  const url: string = `
+    https://accounts.google.com/o/oauth2/v2/auth?
+      scope=https://www.googleapis.com/auth/userinfo.profile{{BLANK}}https%3A//www.googleapis.com/auth/youtube.force-ssl&
+      access_type=offline&
+      include_granted_scopes=true&
+      response_type=code&
+      state=${sessionStorage.getItem('discordToken')}&
+      redirect_uri=${location.origin}/stream/login&
+      client_id=${googleClientId}
+    `
     .replace(/\n| /g, '')
     .replace(/{{BLANK}}/g, ' ');
 

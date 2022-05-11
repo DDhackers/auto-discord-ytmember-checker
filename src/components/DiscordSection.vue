@@ -36,10 +36,7 @@
     </div>
 
     <div class="flex mb-5">
-      <Async
-        :loading="isFetching"
-        class="flex justify-center w-full"
-      >
+      <Async :loading="isFetching" class="flex justify-center w-full">
         <div
           v-if="isAuthed"
           class="info_card card bg-zinc-900 my-3 mx-auto sm:mx-0"
@@ -83,12 +80,12 @@
 </template>
 
 <script setup lang="ts">
+import { type } from 'os';
 import { computed, inject, onMounted, ref } from 'vue';
 import Async from './Async.vue';
 
 const discordClientId = inject('discordClientId');
 const apiURL = inject('apiURL');
-const errorText = ref<string>('');
 
 interface DiscordUser {
   accent_color: string;
@@ -114,85 +111,100 @@ const isFetching = ref<boolean>(false);
 const isAuthed = computed<boolean>(() => !!userInfo.value.id);
 
 interface CallBackResponse {
-        code: number;
-    message: ApiResult;
+  code: number;
+  message: ApiResult;
 }
 
 interface ApiResult {
-        Token: string;
-        DiscordData: DiscordUser;
+  Token: string;
+  DiscordData: DiscordUser;
 }
 
-onMounted(async () => {
-  const currentUrl = new URL(location.href);
-  
-  if (currentUrl.searchParams.get('state') != 'discord') return;
-  
-  const discordCode =
-    currentUrl.searchParams.get('code');
-	
-  if (!discordCode) return;
-	
+onMounted(() => {
+  fetchGoogleData();
+});
+
+interface DiscordTokenRespnose {
+  discordToken?: string;
+  error?: any;
+}
+
+const fetchDiscordToken: AsynFn<DiscordTokenRespnose> = async () => {
   isFetching.value = true;
-  
-   try {
-        const result = await fetch(
-          `${apiURL}/DiscordCallBack?code=${discordCode}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
+  const currentUrl = new URL(location.href);
+
+  if (currentUrl.searchParams.get('state') != 'discord')
+    return { error: 'invalid state' };
+  const discordCode = currentUrl.searchParams.get('code');
+
+  try {
+    const result = await fetch(
+      `${apiURL}/DiscordCallBack?code=${discordCode}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
     emit('auth', discordCode);
 
     if (!result.ok) throw result;
 
     const response = (await result.json()) as CallBackResponse;
     if (response.code != 200) throw response;
-	const discordToken = response.message.Token;
-	
-	sessionStorage.setItem('discord_token', discordToken);
-  
+    const discordToken = response.message.Token;
+
+    sessionStorage.setItem('discord_token', discordToken);
+
     userInfo.value = response.message.DiscordData;
-      
-    try {
-        const result = await fetch(`${apiURL}/GetGoogleData?token=${discordToken}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
+    return { discordToken };
+  } catch (error: any) {
+    console.error(error);
+    toast.error(`${error.message}`.trim());
+    return { error };
+  }
+};
 
-        if (!result.ok) throw result;
+const fetchGoogleData: AsynFn<void> = async () => {
+  const { discordToken, error } = await fetchDiscordToken();
 
-        const response = (await result.json()) as CallBackResponse;
-        if (response.code == 200) {
-               //userInfo.value = response.message;
+  if (error) return;
 
-               //isAuthed.value = true;
+  try {
+    const result = await fetch(
+      `${apiURL}/GetGoogleData?token=${discordToken}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
         }
-    } catch (error: any) {
-        console.error(error);
-        toast.error(`${error.message}`.trim());
-    } finally {
-        isFetching.value = false;
-    }
+      }
+    );
 
+    if (!result.ok) throw result;
+
+    const response = (await result.json()) as CallBackResponse;
+    if (response.code == 200) {
+      //userInfo.value = response.message;
+      //isAuthed.value = true;
+    }
   } catch (error: any) {
     console.error(error);
     toast.error(`${error.message}`.trim());
   } finally {
     isFetching.value = false;
   }
-});
+};
 
 const openDiscord = () => {
   if (isAuthed.value) return;
-  location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${location.origin}/stream/login&response_type=code&scope=identify&state=discord`;
+  location.href = `
+    https://discord.com/api/oauth2/authorize?
+    client_id=${discordClientId}&redirect_uri=${location.origin}/stream/login&response_type=code&
+    scope=identify&
+    state=discord
+  `.replace(/\n| /g, '');
 };
 </script>
 
