@@ -45,9 +45,14 @@
           class="info_card card bg-zinc-900 my-3 mx-auto sm:mx-0"
         >
           <div class="w-full">
-            <div class="discord_banner bg-neutral-500 w-full">
+            <div
+              class="discord_banner bg-neutral-500 w-full"
+              :class="{ got_banner: !isNoBanner(userInfo) }"
+              :style="{ backgroundColor: userInfo.banner_color }"
+            >
               <img
-                :src="`https://cdn.discordapp.com/banners/${userInfo.id}/${userInfo.banner}.png?size=320`"
+                v-if="!isNoBanner(userInfo)"
+                :src="`https://cdn.discordapp.com/banners/${userInfo.id}/${userInfo.banner}?size=320`"
                 class="w-full"
               />
             </div>
@@ -56,7 +61,7 @@
                 class="w-24 h-24 bg-zinc-900 p-1 absolute -top-12 rounded-full flex justify-center items-center"
               >
                 <img
-                  :src="`https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}.png?size=96`"
+                  :src="`https://cdn.discordapp.com/avatars/${userInfo.id}/${userInfo.avatar}?size=96`"
                   class="rounded-full"
                 />
               </div>
@@ -193,6 +198,9 @@ const openDiscord = () => {
 
 <style lang="scss">
 .discord_banner {
-  min-height: 120px;
+  min-height: 60px;
+  &.got_banner {
+    min-height: 120px;
+  }
 }
 </style>
