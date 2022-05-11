@@ -121,12 +121,17 @@ interface ApiResult {
   DiscordData: DiscordUser;
 }
 
-onMounted(() => {
+onMounted(async () => {
   const discordData = sessionStorage.getItem('DiscordData');
+  const discordToken = sessionStorage.getItem('discord_token');
   if (discordData) {
     userInfo.value = JSON.parse(discordData);
   }
-  fetchGoogleData();
+
+  await fetchGoogleData();
+  if (discordToken) {
+    emit('auth', discordToken);
+  }
 });
 
 interface DiscordTokenRespnose {
