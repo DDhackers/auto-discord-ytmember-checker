@@ -207,11 +207,11 @@ const fetchGoogleData: AsynFn<void> = async () => {
 const openDiscord = () => {
   if (isAuthed.value) return;
   const redirect_uri = `${location.origin}/stream/login`;
-  // const redirect_uri = 'https://dcbot.konnokai.me/stream/login';
 
   location.href = `
     https://discord.com/api/oauth2/authorize?
-    client_id=${discordClientId}&redirect_uri=${redirect_uri}=&response_type=code&
+    client_id=${discordClientId}&redirect_uri=${redirect_uri}&
+    response_type=code&
     scope=identify&
     state=discord
   `.replace(/\n| /g, '');
