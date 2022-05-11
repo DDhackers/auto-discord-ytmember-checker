@@ -88,7 +88,6 @@ import GoogleSection from '../components/GoogleSection.vue';
 
 import Async from '../components/Async.vue';
 
-const tempToken = inject('tempToken');
 const apiURL = inject('apiURL');
 
 const googleAccessToken = ref<string>('');
@@ -142,8 +141,7 @@ const sendTokens = async () => {
   if (isSuccess.value) return;
   isTokenSending.value = true;
   const payload = {
-    DiscordAccessToken: discordAccessToken.value,
-    GoogleToken: tempToken
+    DiscordAccessToken: discordAccessToken.value
   };
 
   try {

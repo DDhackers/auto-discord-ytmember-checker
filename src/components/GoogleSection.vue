@@ -81,7 +81,6 @@ import Async from './Async.vue';
 
 const toast: any = inject('toast');
 
-const tempToken = inject('tempToken');
 const googleClientId = inject('googleClientId');
 const apiURL = inject('apiURL');
 
