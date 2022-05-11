@@ -170,7 +170,7 @@ const openUrl = () => {
       access_type=offline&
       include_granted_scopes=true&
       response_type=code&
-      state=${sessionStorage.getItem('discordToken')}&
+      state=${sessionStorage.getItem('discord_token')}&
       redirect_uri=${location.origin}/stream/login&
       client_id=${googleClientId}
     `
