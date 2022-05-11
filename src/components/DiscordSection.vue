@@ -80,7 +80,6 @@
 </template>
 
 <script setup lang="ts">
-import { type } from 'os';
 import { computed, inject, onMounted, ref } from 'vue';
 import Async from './Async.vue';
 
@@ -109,6 +108,8 @@ const userInfo = ref<DiscordUser>({} as DiscordUser);
 const isFetching = ref<boolean>(false);
 
 const isAuthed = computed<boolean>(() => !!userInfo.value.id);
+const isNoBanner = (userInfo: DiscordUser): Boolean =>
+  userInfo.banner === null || userInfo.banner === 'null';
 
 interface CallBackResponse {
   code: number;
@@ -121,6 +122,10 @@ interface ApiResult {
 }
 
 onMounted(() => {
+  const discordData = sessionStorage.getItem('DiscordData');
+  if (discordData) {
+    userInfo.value = JSON.parse(discordData);
+  }
   fetchGoogleData();
 });
 
@@ -147,17 +152,17 @@ const fetchDiscordToken: AsynFn<DiscordTokenRespnose> = async () => {
         }
       }
     );
-    emit('auth', discordCode);
 
     if (!result.ok) throw result;
 
     const response = (await result.json()) as CallBackResponse;
     if (response.code != 200) throw response;
     const discordToken = response.message.Token;
+    userInfo.value = response.message.DiscordData;
 
     sessionStorage.setItem('discord_token', discordToken);
+    sessionStorage.setItem('DiscordData', JSON.stringify(userInfo.value));
 
-    userInfo.value = response.message.DiscordData;
     return { discordToken };
   } catch (error: any) {
     console.error(error);
@@ -167,11 +172,11 @@ const fetchDiscordToken: AsynFn<DiscordTokenRespnose> = async () => {
 };
 
 const fetchGoogleData: AsynFn<void> = async () => {
-  const { discordToken, error } = await fetchDiscordToken();
-
-  if (error) return;
-
   try {
+    const { discordToken, error } = await fetchDiscordToken();
+
+    if (error) return;
+
     const result = await fetch(
       `${apiURL}/GetGoogleData?token=${discordToken}`,
       {
@@ -185,6 +190,8 @@ const fetchGoogleData: AsynFn<void> = async () => {
     if (!result.ok) throw result;
 
     const response = (await result.json()) as CallBackResponse;
+    emit('auth', discordToken);
+
     if (response.code == 200) {
       //userInfo.value = response.message;
       //isAuthed.value = true;
