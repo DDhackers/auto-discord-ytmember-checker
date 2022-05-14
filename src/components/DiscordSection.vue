@@ -124,11 +124,11 @@ interface ApiResult {
 onMounted(async () => {
   const discordData = sessionStorage.getItem('DD');
   const discordToken = sessionStorage.getItem('DT');
+
   if (discordData) {
     userInfo.value = JSON.parse(discordData);
   }
-
-  await fetchGoogleData();
+  await fetchDiscordToken();
 
   if (discordToken) {
     emit('auth', true);
@@ -141,12 +141,13 @@ interface DiscordTokenRespnose {
 }
 
 const fetchDiscordToken: AsyncFn<DiscordTokenRespnose> = async () => {
-  isFetching.value = true;
   const currentUrl = new URL(location.href);
 
   if (currentUrl.searchParams.get('state') != 'discord')
     return { error: 'invalid state' };
   const discordCode = currentUrl.searchParams.get('code');
+
+  isFetching.value = true;
 
   try {
     const result = await fetch(
@@ -174,37 +175,6 @@ const fetchDiscordToken: AsyncFn<DiscordTokenRespnose> = async () => {
     console.error(error);
     toast.error(`${error.message}`.trim());
     return { error };
-  }
-};
-
-const fetchGoogleData: AsyncFn<void> = async () => {
-  try {
-    const { discordToken, error } = await fetchDiscordToken();
-
-    if (error) return;
-
-    const result = await fetch(
-      `${apiURL}/GetGoogleData?token=${discordToken}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-
-    if (!result.ok) throw result;
-
-    const response = (await result.json()) as CallBackResponse;
-    emit('auth', discordToken);
-
-    if (response.code == 200) {
-      //userInfo.value = response.message;
-      //isAuthed.value = true;
-    }
-  } catch (error: any) {
-    console.error(error);
-    toast.error(`${error.message}`.trim());
   } finally {
     isFetching.value = false;
   }
