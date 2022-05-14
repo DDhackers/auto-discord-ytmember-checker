@@ -1,1 +1,1 @@
-type AsynFn<T> = () => Promise<T>;
+type AsyncFn<T> = () => Promise<T>;

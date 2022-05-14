@@ -131,7 +131,7 @@ onMounted(async () => {
   await fetchGoogleData();
 
   if (discordToken) {
-    emit('auth', discordToken);
+    emit('auth', true);
   }
 });
 
@@ -140,7 +140,7 @@ interface DiscordTokenRespnose {
   error?: any;
 }
 
-const fetchDiscordToken: AsynFn<DiscordTokenRespnose> = async () => {
+const fetchDiscordToken: AsyncFn<DiscordTokenRespnose> = async () => {
   isFetching.value = true;
   const currentUrl = new URL(location.href);
 
@@ -177,7 +177,7 @@ const fetchDiscordToken: AsynFn<DiscordTokenRespnose> = async () => {
   }
 };
 
-const fetchGoogleData: AsynFn<void> = async () => {
+const fetchGoogleData: AsyncFn<void> = async () => {
   try {
     const { discordToken, error } = await fetchDiscordToken();
 

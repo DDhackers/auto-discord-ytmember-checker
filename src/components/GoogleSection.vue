@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 import Async from './Async.vue';
 
 const toast: any = inject('toast');
@@ -91,7 +91,11 @@ interface UserInfo {
   UserAvatarUrl: string;
 }
 
-const isFetching = ref<boolean>(false);
+const isFetchingByURL = ref<boolean>(false);
+const isFetchingByDT = ref<boolean>(false);
+const isFetching = computed(
+  () => isFetchingByURL.value || isFetchingByDT.value
+);
 const userInfo = ref({} as UserInfo);
 
 const isAuthed = ref<boolean>(false);
@@ -102,7 +106,12 @@ interface CallBackResponse {
   message: UserInfo;
 }
 
-onMounted(async () => {
+onMounted(() => {
+  fetchGoogleDataByURL();
+  fetchGoogleData();
+});
+
+const fetchGoogleDataByURL: AsyncFn<void> = async () => {
   const currentUrl = new URL(location.href);
 
   if (currentUrl.searchParams.get('state') == 'discord') return;
@@ -114,7 +123,7 @@ onMounted(async () => {
   if (!googleCode) return;
   if (!discordToken) return;
 
-  isFetching.value = true;
+  isFetchingByURL.value = true;
 
   try {
     const result = await fetch(
@@ -126,41 +135,46 @@ onMounted(async () => {
         }
       }
     );
-    emit('auth', googleCode);
 
     if (!result.ok) throw result;
-
-    try {
-      const result = await fetch(
-        `${apiURL}/GetGoogleData?token=${discordToken}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      if (!result.ok) throw result;
-
-      const response = (await result.json()) as CallBackResponse;
-      if (response.code != 200) throw response;
-      userInfo.value = response.message;
-
-      isAuthed.value = true;
-    } catch (error: any) {
-      console.error(error);
-      toast.error(`${error.message}`.trim());
-    } finally {
-      isFetching.value = false;
-    }
   } catch (error: any) {
     console.error(error);
     toast.error(`${error.message}`.trim());
   } finally {
-    isFetching.value = false;
+    isFetchingByURL.value = false;
   }
-});
+};
+
+const fetchGoogleData: AsyncFn<void> = async () => {
+  const discordToken = sessionStorage.getItem('DT');
+  if (!discordToken) return;
+  isFetchingByDT.value = true;
+  try {
+    const result = await fetch(
+      `${apiURL}/GetGoogleData?token=${discordToken}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (!result.ok) throw result;
+
+    const response = (await result.json()) as CallBackResponse;
+    if (response.code != 200) throw response;
+    userInfo.value = response.message;
+    emit('auth', true);
+
+    isAuthed.value = true;
+  } catch (error: any) {
+    console.error(error);
+    toast.error(`${error.message}`.trim());
+  } finally {
+    isFetchingByDT.value = false;
+  }
+};
 
 const openUrl = () => {
   if (isAuthed.value) return;

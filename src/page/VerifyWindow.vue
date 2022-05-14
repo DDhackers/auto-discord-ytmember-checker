@@ -26,10 +26,10 @@
   <div class="h-4"></div>
   <div class="flex flex-wrap justify-center">
     <div class="w-full sm:w-1/2">
-      <DiscordSection @auth="(v) => (discordAccessToken = v)" />
+      <DiscordSection @auth="(v) => (hasDiscordAccessToken = v)" />
     </div>
-    <div class="w-full sm:w-1/2" v-if="!!discordAccessToken">
-      <GoogleSection @auth="(v) => (googleAccessToken = v)" />
+    <div class="w-full sm:w-1/2" v-if="!!hasDiscordAccessToken">
+      <GoogleSection @auth="(v) => (hasGoogleAccessToken = v)" />
     </div>
   </div>
 
@@ -38,18 +38,10 @@
   <div class="w-full flex justify-center">
     <Async :loading="isTokenSending">
       <button
-        v-if="!!googleAccessToken && !!discordAccessToken && !isSuccess"
-        class="btn bg-blue-700"
-        :class="{
-          'bg-transparent': isSuccess,
-          outline: isSuccess,
-          'text-blue-500': isSuccess,
-          'outline-blue-500': isSuccess,
-          'cursor-default': isSuccess
-        }"
-        @click="sendTokens"
+        v-if="hasGoogleAccessToken && hasDiscordAccessToken"
+        class="btn bg-transparent outline text-blue-500 outline-blue-500 cursor-default"
       >
-        <span>{{ isSuccess ? '已完成驗證' : '送出驗證' }}</span>
+        <span>已完成驗證</span>
       </button>
     </Async>
   </div>
@@ -90,8 +82,8 @@ import Async from '../components/Async.vue';
 
 const apiURL = inject('apiURL');
 
-const googleAccessToken = ref<string>('');
-const discordAccessToken = ref<string>('');
+const hasGoogleAccessToken = ref<boolean>(false);
+const hasDiscordAccessToken = ref<boolean>(false);
 
 const isTokenSending = ref<boolean>(false);
 const isSuccess = ref<boolean>(false);
@@ -126,7 +118,7 @@ watch(
 );
 
 watchEffect(() => {
-  if (!!googleAccessToken.value && !!discordAccessToken.value) {
+  if (hasGoogleAccessToken.value && hasDiscordAccessToken.value) {
     setTimeout(() => {
       window.scrollTo(0, document.body.scrollHeight);
     }, 300);
@@ -135,67 +127,5 @@ watchEffect(() => {
 
 const openLinkHint = (): void => {
   isDialogOpen.value = true;
-};
-
-const sendTokens = async () => {
-  if (isSuccess.value) return;
-  isTokenSending.value = true;
-  const payload = {
-    DiscordAccessToken: discordAccessToken.value
-  };
-
-  try {
-    const result = await fetch(`${apiURL}/login`, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!result.ok) throw result;
-    const res = await result.json();
-    toastText.value = `${res.message}`.trim();
-    isSuccess.value = true;
-
-    history.replaceState(null, '', '/');
-    sessionStorage.clear();
-    localStorage.clear();
-  } catch (error: any) {
-    if (error.status) handleResponseError(error.status);
-    if (error.message) errorText.value = `${error.message}`.trim();
-  } finally {
-    isTokenSending.value = false;
-  }
-};
-
-enum ResponseStatus {
-  OK = 200,
-  CREATED = 201,
-  BAD_REQUEST = 400,
-  UNAUTHORIZED = 401,
-  TOO_MANY_REQUESTS = 429,
-  INTERNAL_SERVER_ERROR = 500
-}
-
-const handleResponseError = (status: ResponseStatus): void => {
-  switch (status) {
-    case ResponseStatus.BAD_REQUEST:
-      // errorText.value = '錯誤的請求';
-      break;
-    case ResponseStatus.UNAUTHORIZED:
-      // errorText.value = '使用者未驗證';
-      break;
-    case ResponseStatus.TOO_MANY_REQUESTS:
-      // errorText.value = '請求量過多';
-      break;
-    case ResponseStatus.INTERNAL_SERVER_ERROR:
-      // errorText.value = '伺服器內部錯誤';
-      break;
-
-    default:
-      // errorText.value = '未知的錯誤';
-      break;
-  }
 };
 </script>
