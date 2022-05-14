@@ -122,13 +122,14 @@ interface ApiResult {
 }
 
 onMounted(async () => {
-  const discordData = sessionStorage.getItem('DiscordData');
-  const discordToken = sessionStorage.getItem('discord_token');
+  const discordData = sessionStorage.getItem('DD');
+  const discordToken = sessionStorage.getItem('DT');
   if (discordData) {
     userInfo.value = JSON.parse(discordData);
   }
 
   await fetchGoogleData();
+
   if (discordToken) {
     emit('auth', discordToken);
   }
@@ -165,8 +166,8 @@ const fetchDiscordToken: AsynFn<DiscordTokenRespnose> = async () => {
     const discordToken = response.message.Token;
     userInfo.value = response.message.DiscordData;
 
-    sessionStorage.setItem('discord_token', discordToken);
-    sessionStorage.setItem('DiscordData', JSON.stringify(userInfo.value));
+    sessionStorage.setItem('DT', discordToken);
+    sessionStorage.setItem('DD', JSON.stringify(userInfo.value)); // DiscordData
 
     return { discordToken };
   } catch (error: any) {

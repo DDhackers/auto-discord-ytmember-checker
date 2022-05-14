@@ -109,7 +109,7 @@ onMounted(async () => {
 
   const googleCode = currentUrl.searchParams.get('code');
 
-  const discordToken = sessionStorage.getItem('discord_token');
+  const discordToken = sessionStorage.getItem('DT');
 
   if (!googleCode) return;
   if (!discordToken) return;
@@ -170,7 +170,7 @@ const openUrl = () => {
       access_type=offline&
       include_granted_scopes=true&
       response_type=code&
-      state=${sessionStorage.getItem('discord_token')}&
+      state=${sessionStorage.getItem('DT')}&
       redirect_uri=${location.origin}/stream/login&
       client_id=${googleClientId}
     `
