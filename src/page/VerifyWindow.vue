@@ -41,7 +41,7 @@
         v-if="hasGoogleAccessToken && hasDiscordAccessToken"
         class="btn bg-transparent outline text-blue-500 outline-blue-500 cursor-default"
       >
-        <span>已完成驗證</span>
+        <span>已完成綁定</span>
       </button>
     </Async>
   </div>
