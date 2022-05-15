@@ -106,8 +106,8 @@ interface CallBackResponse {
   message: UserInfo;
 }
 
-onMounted(() => {
-  fetchGoogleDataByURL();
+onMounted(async () => {
+  await fetchGoogleDataByURL();
   fetchGoogleData();
 });
 
@@ -137,6 +137,7 @@ const fetchGoogleDataByURL: AsyncFn<void> = async () => {
     );
 
     if (!result.ok) throw result;
+    window.history.replaceState({}, '', location.href.split('?')[0]);
   } catch (error: any) {
     console.error(error);
     toast.error(`${error.message}`.trim());

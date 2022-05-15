@@ -169,6 +169,8 @@ const fetchDiscordToken: AsyncFn<DiscordTokenRespnose> = async () => {
 
     sessionStorage.setItem('DT', discordToken);
     sessionStorage.setItem('DD', JSON.stringify(userInfo.value)); // DiscordData
+    window.history.replaceState({}, '', location.href.split('?')[0]);
+    emit('auth', true);
 
     return { discordToken };
   } catch (error: any) {

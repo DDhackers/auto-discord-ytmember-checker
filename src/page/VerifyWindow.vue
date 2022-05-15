@@ -28,7 +28,7 @@
     <div class="w-full sm:w-1/2">
       <DiscordSection @auth="(v) => (hasDiscordAccessToken = v)" />
     </div>
-    <div class="w-full sm:w-1/2" v-if="!!hasDiscordAccessToken">
+    <div class="w-full sm:w-1/2" v-if="hasDiscordAccessToken">
       <GoogleSection @auth="(v) => (hasGoogleAccessToken = v)" />
     </div>
   </div>
@@ -74,19 +74,17 @@
 </template>
 
 <script setup lang="ts">
-import { inject, provide, ref, watch, watchEffect } from 'vue';
+import { provide, ref, watch, watchEffect } from 'vue';
 import DiscordSection from '../components/DiscordSection.vue';
 import GoogleSection from '../components/GoogleSection.vue';
 
 import Async from '../components/Async.vue';
 
-const apiURL = inject('apiURL');
-
 const hasGoogleAccessToken = ref<boolean>(false);
 const hasDiscordAccessToken = ref<boolean>(false);
 
 const isTokenSending = ref<boolean>(false);
-const isSuccess = ref<boolean>(false);
+
 const isDialogOpen = ref<boolean>(false);
 const errorText = ref<string>('');
 const toastText = ref<string>('');
