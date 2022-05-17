@@ -8,12 +8,7 @@
     <p>這是一個可自動驗證會員的應用程式</p>
     <p>
       將會需要您的
-      <strong class="text-indigo-400">
-        discord
-        <span class="cursor-pointer underline" @click="openLinkHint">
-          (需連結 youtube)
-        </span>
-      </strong>
+      <strong class="text-indigo-400">discord</strong>
       以及
       <strong class="text-red-400">youtube (google 帳戶)</strong>
       授權
