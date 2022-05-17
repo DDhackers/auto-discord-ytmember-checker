@@ -52,20 +52,6 @@
       <div v-if="toastText" class="toast bg-teal-600">{{ toastText }}</div>
     </Transition>
   </Teleport>
-
-  <Teleport to="body">
-    <div class="layout" v-show="isDialogOpen" @click="isDialogOpen = false">
-      <div class="layout-mask"></div>
-      <Transition name="dialog">
-        <div v-if="isDialogOpen" class="dialog-content">
-          <div class="text-center">
-            <img src="/link_youtube.png" />
-            <p class="text-gray-400">[隨意點擊後關閉]</p>
-          </div>
-        </div>
-      </Transition>
-    </div>
-  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -80,7 +66,6 @@ const hasDiscordAccessToken = ref<boolean>(false);
 
 const isTokenSending = ref<boolean>(false);
 
-const isDialogOpen = ref<boolean>(false);
 const errorText = ref<string>('');
 const toastText = ref<string>('');
 
@@ -117,8 +102,4 @@ watchEffect(() => {
     }, 300);
   }
 });
-
-const openLinkHint = (): void => {
-  isDialogOpen.value = true;
-};
 </script>
