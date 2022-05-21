@@ -15,7 +15,16 @@
       <br />
       才有辦法為您做自動驗證
     </p>
-
+    <p>
+      若您的伺服器未提供說明的話可
+      <a
+        href=" https://konnokai.notion.site/e69c579dc0ae4ff69866946d7dc36b8f"
+        class="text-sm text-indigo-300 underline"
+        target="_blank"
+      >
+	    參考此頁面
+      </a>
+    </p>
     <p class="mt-2">點擊下方按鈕完成</p>
   </div>
   <div class="h-4"></div>
