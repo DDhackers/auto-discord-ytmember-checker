@@ -62,7 +62,7 @@
       <button
         v-if="isAuthed"
         class="btn bg-transparent text-red-500 outline-red-500"
-        @click="openUrl"
+        @click="unLink"
       >
         <Async :loading="isUnlinking">解除綁定</Async>
       </button>
