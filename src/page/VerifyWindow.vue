@@ -22,7 +22,7 @@
         class="text-sm text-indigo-300 underline"
         target="_blank"
       >
-	    參考此頁面
+        參考此頁面
       </a>
     </p>
     <p class="mt-2">點擊下方按鈕完成</p>

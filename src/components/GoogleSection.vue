@@ -3,7 +3,7 @@
     <div class="flex justify-center items-center">
       <div class="relative">
         <button
-          class="btn"
+          class="btn static"
           :class="{
             'bg-red-600': !isAuthed,
             'active:bg-red-500': !isAuthed,
@@ -57,6 +57,16 @@
         </svg>
       </div>
     </div>
+    <div class="h-8"></div>
+    <div class="flex justify-center items-center">
+      <button
+        v-if="isAuthed"
+        class="btn bg-transparent text-red-500 outline-red-500"
+        @click="openUrl"
+      >
+        <Async :loading="isUnlinking">解除綁定</Async>
+      </button>
+    </div>
   </div>
 
   <div class="flex">
@@ -93,6 +103,7 @@ interface UserInfo {
 
 const isFetchingByURL = ref<boolean>(false);
 const isFetchingByDT = ref<boolean>(false);
+const isUnlinking = ref<boolean>(false);
 const isFetching = computed(
   () => isFetchingByURL.value || isFetchingByDT.value
 );
@@ -177,6 +188,35 @@ const fetchGoogleData: AsyncFn<void> = async () => {
   }
 };
 
+const unLink: AsyncFn<void> = async () => {
+  if (!isAuthed.value) return;
+  const discordToken = sessionStorage.getItem('DT');
+  if (!discordToken) return;
+  isUnlinking.value = true;
+
+  try {
+    const result = await fetch(`${apiURL}/UnlinkGoogle?token=${discordToken}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!result.ok) throw result;
+
+    const response = (await result.json()) as CallBackResponse;
+    if (response.code != 200) throw response;
+
+    isAuthed.value = false;
+    toast('解除綁定成功');
+  } catch (error: any) {
+    console.error(error);
+    toast.error(`${error.message}`.trim());
+  } finally {
+    isUnlinking.value = false;
+  }
+};
+
 const openUrl = () => {
   if (isAuthed.value) return;
   const url: string = `
@@ -204,6 +244,7 @@ const openUrl = () => {
   left: 50%;
   transform: translate(-50%, 0);
   @apply bg-slate-500 text-white rounded-lg p-4 w-80;
+  z-index: 1;
 }
 
 .hint.active {
