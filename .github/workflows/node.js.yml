@@ -25,4 +25,4 @@ jobs:
         cache: 'pnpm'
     - run: pnpm install
     - run: pnpm run build
-    - run: mv -r ./dist/* ${{ secrets.WEB_SERVER_PATH }}
+    - run: mv ./dist/* ${{ secrets.WEB_SERVER_PATH }}
