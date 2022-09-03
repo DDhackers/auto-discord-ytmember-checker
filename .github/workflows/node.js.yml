@@ -25,4 +25,4 @@ jobs:
         cache: 'pnpm'
     - run: pnpm install
     - run: pnpm run build
-    - run: scp -r ./dist/* ${{ secrets.WEB_SERVER_USERNAME }}@${{ secrets.WEB_SERVER_IP }}:${{ secrets.WEB_SERVER_PATH }}
+    - run: mv -r ./dist/* ${{ secrets.WEB_SERVER_PATH }}
