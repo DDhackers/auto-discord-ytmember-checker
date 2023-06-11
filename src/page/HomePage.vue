@@ -47,7 +47,7 @@
         <span class="text-red-400">Google</span>
         相關的服務以外，《直播小幫手》還支援
         <span class="text-blue-400">Twitter</span>
-        Space (推特語音空間) 的提醒通知，讓你不再錯貴過任何突襲推特語音！
+        Space (推特語音空間) 的提醒通知，讓你不再錯過任何突襲推特語音！
       </div>
     </div>
   </div>
