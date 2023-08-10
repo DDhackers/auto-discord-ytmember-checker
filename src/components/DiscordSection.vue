@@ -67,7 +67,10 @@
                 <span class="font-bold text-white">
                   {{ userInfo.username }}
                 </span>
-                <span class="font-bold text-zinc-400">
+                <span
+                  v-if="isShowDiscriminator(userInfo)"
+                  class="font-bold text-zinc-400"
+                >
                   #{{ userInfo.discriminator }}
                 </span>
               </div>
@@ -110,6 +113,8 @@ const isFetching = ref<boolean>(false);
 const isAuthed = computed<boolean>(() => !!userInfo.value.id);
 const isNoBanner = (userInfo: DiscordUser): Boolean =>
   userInfo.banner === null || userInfo.banner === 'null';
+const isShowDiscriminator = (userInfo: DiscordUser): Boolean =>
+  userInfo.discriminator !== '0';
 
 interface CallBackResponse {
   code: number;
