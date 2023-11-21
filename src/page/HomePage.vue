@@ -5,7 +5,7 @@
       <div class="flex-1 flex justify-center my-3">
         《直播小幫手》是一隻提供 Vtuber
         直播通知、待機室建立、影片上傳、會限認證等服務的 Discord
-        機器人。目前在超過 1000 個伺服器中服務超過 380,000 位成員！
+        機器人。目前在超過 1600 個伺服器中服務超過 500,000 位成員！
       </div>
     </div>
     <div class="h-7"></div>
